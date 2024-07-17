@@ -9,7 +9,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from pet.models import Pet, Type
-from rest_framework import mixins, viewsets, permissions
+from rest_framework import mixins, permissions, viewsets
 from user.models import User
 
 from .filters import PetFilter
