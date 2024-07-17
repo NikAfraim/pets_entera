@@ -4,9 +4,12 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-#30@d6b4g!=2lpx_%q6fd^#z*41do_x&9+jp3vxekx$+r6e8jn'
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    'django-insecure--30@d6b4g!=2lpx_%q6fd^-z*41do_x&9+jp3vxekx$+r6e8jn'
+)
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", True)
 
 ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1']
 
@@ -24,6 +27,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'pet.apps.PetConfig',
     'api.apps.ApiConfig',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -56,12 +60,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'pets_site.wsgi.application'
 
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": {
+        "ENGINE": os.getenv("DB_ENGINE"),
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+    },
 }
 
 AUTH_USER_MODEL = 'user.User'

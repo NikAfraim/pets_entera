@@ -9,7 +9,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from pet.models import Pet, Type
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, permissions
 from user.models import User
 
 from .filters import PetFilter
@@ -23,6 +23,7 @@ class UserViewSet(DjoserUserViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserReadSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class TypeViewSet(mixins.ListModelMixin,
@@ -32,13 +33,14 @@ class TypeViewSet(mixins.ListModelMixin,
 
     queryset = Type.objects.all()
     serializer_class = TypeSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class PetViewSet(viewsets.ModelViewSet):
     """View-класс реализующий операции модели Pet."""
 
     queryset = Pet.objects.all()
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = PetFilter
 
