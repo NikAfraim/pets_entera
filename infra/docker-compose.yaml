@@ -1,0 +1,55 @@
+version: '3.3'
+services:
+
+
+  database:
+    container_name: database
+    image: postgres:alpine
+    restart: always
+    env_file:
+    - .env
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - database:/var/lib/postgresql/data/
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    container_name: pets_backend
+    build:
+      context: ../pets_site
+      dockerfile: Dockerfile
+#    image: nikiafree/pets_backend:latest
+    restart: always
+    volumes:
+      - static_value:/app/static_value/
+      - media_value:/app/media/
+    depends_on:
+      - database
+    env_file:
+      - .env
+
+  nginx:
+    container_name: pets_nginx
+    restart: always
+    build:
+      context: ./
+      dockerfile: nginx.Dockerfile
+    volumes:
+      - static_value:/usr/share/nginx/html/static_value/
+      - media_value:/usr/share/nginx/html/media/
+    ports:
+      - "80:80"
+    links:
+      - backend
+    depends_on:
+      - backend
+
+volumes:
+  static_value:
+  media_value:
+  database:
